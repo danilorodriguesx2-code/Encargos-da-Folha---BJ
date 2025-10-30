@@ -1,0 +1,1 @@
+echo "streamlit\npandas\nopenpyxl" > requirements.txt
