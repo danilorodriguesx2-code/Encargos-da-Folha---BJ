@@ -3,8 +3,7 @@ import pandas as pd
 import io
 from datetime import datetime
 
-st.set_page_config(
-    page_title="Provisões Encargos Folha de Pagamento", layout="wide")
+st.set_page_config(page_title="Provisões Encargos Folha de Pagamento", layout="wide")
 
 
 def carregar_excel(uploaded_file):
@@ -82,33 +81,12 @@ def gerar_layout_final(df, lote, competencia, cpf_cnpj, complemento):
     cols = list(df.columns)
     value_labels = ['FERIAS', 'INSS', 'FGTS', 'PIS']
 
-    # ======================= ÚNICA ALTERAÇÃO: buscar COD HISTÓRICO da última linha =======================
-    # Procura de baixo para cima a primeira linha que contenha pelo menos 4 números inteiros (>=100).
-    # Converte 868, 868.0, " 868 " etc. para "868" e usa os 4 últimos nessa ordem: FERIAS, INSS, FGTS, PIS.
-    cod_historico_map = {'FERIAS': '', 'INSS': '', 'FGTS': '', 'PIS': ''}
-    for i in range(len(df) - 1, -1, -1):
-        row = df.iloc[i]
-        ints = []
-        for v in row.values:
-            s = str(v).strip().replace(',', '.')
-            try:
-                f = float(s)
-                if abs(f - round(f)) < 1e-9:
-                    iv = int(round(f))
-                    # evita capturar "1", "2", "99" etc. (UNIDADE, TOTAL), foca em códigos tipo 860..871
-                    if iv >= 100:
-                        ints.append(str(iv))
-            except:
-                continue
-        if len(ints) >= 4:
-            cod_historico_map = {
-                'FERIAS': ints[-4],
-                'INSS':   ints[-3],
-                'FGTS':   ints[-2],
-                'PIS':    ints[-1],
-            }
-            break
-    # ====================================================================================================
+    cod_historico_map = {
+        'FERIAS': '868',
+        'INSS': '869',
+        'FGTS': '870',
+        'PIS': '871'
+    }
 
     grupos = {}
     for lbl in value_labels:
